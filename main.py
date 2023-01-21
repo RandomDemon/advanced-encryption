@@ -1,49 +1,66 @@
 import sys
 import base64
 from cryptography.fernet import Fernet
+from tkinter import *
+from tkinter import filedialog
+from tkinter import messagebox
 
-usage_msg = "Usage: "+ sys.argv[0] +" (-e/-d) [file]"
-help_msg = usage_msg + "\n" +\
-        "Examples:\n" +\
-        "  To decrypt a file named 'pole.txt', do: " +\
-        "'$ python "+ sys.argv[0] +" -d pole.txt'\n"
-
-if len(sys.argv) < 2 or len(sys.argv) > 4:
-    print(usage_msg)
-    sys.exit(1)
-
-if sys.argv[1] == "-e":
-    if len(sys.argv) < 4:
-        sim_sala_bim = input("Please enter the password:")
+def encrypt_file():
+    password = password_entry.get()
+    if len(password) == 0:
+        messagebox.showerror("Error", "Please enter a password.")
     else:
-        sim_sala_bim = sys.argv[3]
+        filepath = filedialog.askopenfilename()
+        if filepath:
+            try:
+                ssb_b64 = base64.b64encode(password.encode())
+                c = Fernet(ssb_b64)
+                with open(filepath, "rb") as f:
+                    data = f.read()
+                    data_c = c.encrypt(data)
+                    sys.stdout.write(data_c.decode())
+                result_label.config(text="File successfully encrypted.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+        else:
+            messagebox.showerror("Error", "Please select a file.")
 
-    ssb_b64 = base64.b64encode(sim_sala_bim.encode())
-    c = Fernet(ssb_b64)
-
-    with open(sys.argv[2], "rb") as f:
-        data = f.read()
-        data_c = c.encrypt(data)
-        sys.stdout.write(data_c.decode())
-
-elif sys.argv[1] == "-d":
-    if len(sys.argv) < 4:
-        sim_sala_bim = input("Please enter the password:")
+def decrypt_file():
+    password = password_entry.get()
+    if len(password) == 0:
+        messagebox.showerror("Error", "Please enter a password.")
     else:
-        sim_sala_bim = sys.argv[3]
+        filepath = filedialog.askopenfilename()
+        if filepath:
+            try:
+                ssb_b64 = base64.b64encode(password.encode())
+                c = Fernet(ssb_b64)
+                with open(filepath, "rb") as f:
+                    data = f.read()
+                    data_c = c.decrypt(data)
+                    sys.stdout.buffer.write(data_c)
+                result_label.config(text="File successfully decrypted.")
+            except Exception as e:
+                messagebox.showerror("Error", str(e))
+        else:
+            messagebox.showerror("Error", "Please select a file.")
 
-    ssb_b64 = base64.b64encode(sim_sala_bim.encode())
-    c = Fernet(ssb_b64)
+root = Tk()
+root.title("Encryption/Decryption GUI")
 
-    with open(sys.argv[2], "r") as f:
-        data = f.read()
-        data_c = c.decrypt(data.encode())
-        sys.stdout.buffer.write(data_c)
+password_label = Label(root, text="Enter password:")
+password_label.grid(row=0, column=0)
 
-elif sys.argv[1] == "-h" or sys.argv[1] == "--help":
-    print(help_msg)
-    sys.exit(1)
+password_entry = Entry(root)
+password_entry.grid(row=0, column=1)
 
-else:
-    print("Unrecognized first argument: "+ sys.argv[1])
-    print("Please use '-e', '-d', or '-h'.")
+encrypt_button = Button(root, text="Encrypt File", command=encrypt_file)
+encrypt_button.grid(row=1, column=0)
+
+decrypt_button = Button(root, text="Decrypt File", command=decrypt_file)
+decrypt_button.grid(row=1, column=1)
+
+result_label = Label(root)
+result_label.grid(row=2, columnspan=2)
+
+root.mainloop()
