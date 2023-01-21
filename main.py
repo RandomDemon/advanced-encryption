@@ -1,4 +1,3 @@
-import sys
 import base64
 from cryptography.fernet import Fernet
 from tkinter import *
@@ -56,26 +55,40 @@ def save_file():
         save_button.config(state=DISABLED)
     else:
         messagebox.showerror("Error", "Please select a file.")
-        
+
 root = Tk()
+root.geometry("500x200")
 root.title("Encryption/Decryption GUI")
+root['background']='#cef2f5'
+
+style = ttk.Style()
+style.theme_use('clam')
 
 password_label = ttk.Label(root, text="Enter password:")
 password_label.grid(row=0, column=0)
+password_label['background']='#def2f3'
 
 password_entry = ttk.Entry(root)
 password_entry.grid(row=0, column=1)
 
 encrypt_button = ttk.Button(root, text="Encrypt File", command=encrypt_file)
-encrypt_button.grid(row=1, column=0)
+encrypt_button.grid(row=1, column=0, pady=10)
 
 decrypt_button = ttk.Button(root, text="Decrypt File", command=decrypt_file)
-decrypt_button.grid(row=1, column=1)
+decrypt_button.grid(row=1, column=1, pady=10)
 
 result_label = ttk.Label(root, text="")
 result_label.grid(row=2, column=0, columnspan=2)
+result_label['background']='#cef2f5'
 
 save_button = ttk.Button(root, text="Save File", command=save_file, state=DISABLED)
-save_button.grid(row=3, column=0, columnspan=2)
+save_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+root.rowconfigure(0, weight=1)
+root.rowconfigure(1, weight=1)
+root.rowconfigure(2, weight=1)
+root.rowconfigure(3, weight=1)
+root.columnconfigure(0, weight=1)
+root.columnconfigure(1, weight=1)
 
 root.mainloop()
