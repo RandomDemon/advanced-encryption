@@ -1,4 +1,6 @@
 import base64
+import string
+import random
 from cryptography.fernet import Fernet
 from tkinter import *
 from tkinter import filedialog
@@ -56,8 +58,13 @@ def save_file():
     else:
         messagebox.showerror("Error", "Please select a file.")
 
+def generate_password():
+    password = ''.join(random.choices(string.ascii_letters + string.digits, k=16))
+    password_entry.delete(0, END)
+    password_entry.insert(0, password)
+
 root = Tk()
-root.geometry("500x200")
+root.geometry("700x250")
 root.title("Encryption/Decryption GUI")
 root['background']='#cef2f5'
 
@@ -83,6 +90,9 @@ result_label['background']='#cef2f5'
 
 save_button = ttk.Button(root, text="Save File", command=save_file, state=DISABLED)
 save_button.grid(row=3, column=0, columnspan=2, pady=10)
+
+generate_password_button = ttk.Button(root, text="Generate Password", command=generate_password)
+generate_password_button.grid(row=2, column=0, columnspan=2, pady=10)
 
 root.rowconfigure(0, weight=1)
 root.rowconfigure(1, weight=1)
