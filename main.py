@@ -48,7 +48,7 @@ def decrypt_file():
 
 def save_file():
     result = result_label.cget("text")
-    filepath = filedialog.asksaveasfilename()
+    filepath = filedialog.asksaveasfilename(defaultextension=".txt", initialfile='encrypted.txt')
     if filepath:
         with open(filepath, "wb") as f:
             f.write(result)
